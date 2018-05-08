@@ -746,14 +746,26 @@ class ImageMatrix(np.ndarray):
         
     def show(self, title='Image', wait=True):
         """
-        Utility function, shows the image using opencv viewer and (optional) key delayed waiting function.
+        Utility function, shows the image using opencv viewer and (optional)\n
+        key delayed waiting function.
         :param title: str Name of the window of image.
-        :param wait: bool If the process should, or not, be put on standby (any keyboard key to interrupt).
+        :param wait: bool If the process should, or not, be put on standby\n
+        (any keyboard key to interrupt).
         :return: None
         """
         cv2.imshow(title, cv2.cvtColor(self, cv2.COLOR_BGR2RGB))
         if wait:
             cv2.waitKey()
+
+    def is_saturation_greater_than(self, saturation_tolerance):
+        """
+        Tests if any channel is greater the int saturation_tolerance(i.e. if\n
+        the resulting color saturation is beyond the threshold).
+        """
+        median = self.get_median_rgb_value()[:3]
+        return np.absolute(median[0]-median[1]) >= saturation_tolerance or \
+               np.absolute(median[1]-median[2]) >= saturation_tolerance or \
+               np.absolute(median[2]-median[0]) >= saturation_tolerance
 
 
 class Routine(object):
