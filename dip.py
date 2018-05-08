@@ -756,6 +756,11 @@ class ImageMatrix(np.ndarray):
         cv2.imshow(title, cv2.cvtColor(self, cv2.COLOR_BGR2RGB))
         if wait:
             cv2.waitKey()
+        return self
+
+    def save(self, filename, format=None, **params):
+        self.get_image().save(filename, format, **params)
+        return self
 
     def is_saturation_greater_than(self, saturation_tolerance):
         """

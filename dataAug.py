@@ -66,7 +66,7 @@ def generate_sample(img_mtx, dim, find_max_resize_ratio=True, proportion=0.9, sa
         if len(resize_ratios) == 0:
             print('Could not find a valid resize ratio for this image.')
             print('(Returning a black image with specified dimension.)')
-            return background
+            return background.view(ImageMatrix)
         
         img_mtx = img_mtx.resize(ratio=resize_ratios[-1])
 
