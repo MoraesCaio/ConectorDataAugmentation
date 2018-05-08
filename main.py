@@ -26,7 +26,7 @@ if args.folder:
     os.makedirs(folder+output_folder, exist_ok=True)
     
     option = 's'
-    if not output_folder and not args.prefix:
+    if args.save == '' and not output_folder and not args.prefix:
         option = input('This will overwrite files. Are you sure? [s/N]\n')
 
     for filename in os.listdir(folder):
