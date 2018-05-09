@@ -43,8 +43,8 @@ def get_valid_resize_ratios(img_mtx, sat_tolerance=0, start=.15, stop=.21, step=
     return fl_lst
 
 
-def generate_sample(img_mtx, dim, find_max_resize_ratio=True, proportion=0.9, sat_tolerance=0,\
-                    tup2_resize=(0.95, 1.05), tup2_rotation=(-10, 10), tup2_shine=(0.7, 1.05)):
+def generate_sample(img_mtx, dim, find_max_resize_ratio=True, proportion=0.9, sat_tolerance=0,
+                    raw=False, tup2_resize=(0.95, 1.05), tup2_rotation=(-10, 10), tup2_shine=(0.7, 1.05)):
     # Condition to make the function less error prone
     if dim % 4:
         raise Exception('Dimension should be multiple of 4.')
@@ -83,12 +83,12 @@ def generate_sample(img_mtx, dim, find_max_resize_ratio=True, proportion=0.9, sa
     rnd_shine = np.random.uniform(min_shine, max_shine)
 
     # Applying random rotation
-    rnd_rotated = img_mtx.rotate_cropping(rnd_rotation)
+    rnd_rotated = img_mtx.rotate_cropping(rnd_rotation) if not raw else img_mtx.crop_max_contour()
 
     # Adjusting to fit in canvas
     largest = rnd_rotated.shape[1] if rnd_rotated.shape[1] > rnd_rotated.shape[0] else rnd_rotated.shape[0]
     fitting_resize_ratio = dim/(1/proportion)/largest
-    resize_ratio = fitting_resize_ratio * rnd_resize_ratio
+    resize_ratio = fitting_resize_ratio * rnd_resize_ratio if not raw else fitting_resize_ratio
     resized = rnd_rotated.resize(ratio=resize_ratio)
 
     # Finding suitable location to place the resulting image
@@ -96,7 +96,7 @@ def generate_sample(img_mtx, dim, find_max_resize_ratio=True, proportion=0.9, sa
     y = (dim - resized.shape[0])//2
 
     # Applying random shine
-    new_shine = resized.multiply_shine(rnd_shine)
+    new_shine = resized.multiply_shine(rnd_shine) if not raw else resized
 
     # Placing resulting image on canvas
     background[y:y+new_shine.shape[0], x:x+new_shine.shape[1]] = new_shine
