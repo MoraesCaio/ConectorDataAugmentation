@@ -397,7 +397,7 @@ class ImageMatrix(np.ndarray):
 
         y = fl_copy[:, :, :3].dot(factor[:3].T)
         # Allows broadcasting
-        y = y.reshape((y.shape, 1)) * 255
+        y = y.reshape((*y.shape, 1)) * 255
         fl_copy[:, :, :3] = y
 
         return ImageMatrix.format_image_array(fl_copy)
@@ -448,9 +448,9 @@ class ImageMatrix(np.ndarray):
 
         return copy
 
-    def get_histogram_expansion(self):
+    def apply_histogram_stretching(self):
         """
-        Performs histogram expansion.\n
+        Performs histogram stretching.\n
         :return: Formatted uint8 ImageMatrix
         """
         n_max = np.zeros(3, dtype='uint8')
@@ -893,7 +893,7 @@ class Routine(object):
                 .save(self.name + 'Sharpen{0}c{1}d{2}'.format(kernel_type, c, d) + self.ext)
 
     def expansion(self):
-        self.img_mtx.get_histogram_expansion().get_image().save(self.name + 'Expanded' + self.ext)
+        self.img_mtx.apply_histogram_stretching().get_image().save(self.name + 'Expanded' + self.ext)
 
     def equalization(self, channel=0):
         self.img_mtx.apply_histogram_equalization_to_channel(channel).get_image()\
